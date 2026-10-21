@@ -1,51 +1,18 @@
-import { useEffect, useState } from "react";
-import socket from "./socket/socket";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Chat from "./pages/Chat";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    function handleNewMessage(newMessage) {
-      setMessages((previousMessages) => [...previousMessages, newMessage]);
-    }
-
-    socket.on("message:new", handleNewMessage);
-
-    return () => {
-      socket.off("message:new", handleNewMessage);
-    };
-  }, []);
-
-  function sendMessage(event) {
-    event.preventDefault();
-
-    if (!message.trim()) return;
-
-    socket.emit("message:send", message);
-    setMessage("");
-  }
-
   return (
-    <div>
-      <h1>Realtime Lab</h1>
-
-      <form onSubmit={sendMessage}>
-        <input
-          value={message}
-          onChange={(event) => setMessage(event.target.value)}
-          placeholder="Type a message..."
-        />
-
-        <button type="submit">Send</button>
-      </form>
-
-      <h2>Messages</h2>
-
-      {messages.map((msg, index) => (
-        <p key={index}>{msg}</p>
-      ))}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
